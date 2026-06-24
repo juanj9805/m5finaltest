@@ -42,7 +42,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-// Create the database (tables) if it does not exist yet, and add the roles.
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
