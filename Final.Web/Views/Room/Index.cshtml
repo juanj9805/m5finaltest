@@ -1,0 +1,41 @@
+@model IEnumerable<Room>
+@{
+    ViewData["Title"] = "Rooms";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1 class="page-title mb-0">Rooms</h1>
+    @if (User.Identity?.IsAuthenticated ?? false)
+    {
+        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New room</a>
+    }
+</div>
+
+<div class="table-card">
+    <table class="table table-hover">
+        <thead>
+            <tr><th>Property</th><th>Number</th><th>Capacity</th><th>Price / night</th><th class="text-end"></th></tr>
+        </thead>
+        <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.Hotel?.Name</td>
+                <td>Room @r.Number</td>
+                <td><i class="bi bi-people"></i> @r.Capacity</td>
+                <td class="price-tag">@r.DayBasePrice.ToString("C")</td>
+                <td class="text-end">
+                    <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
+                    @if (User.Identity?.IsAuthenticated ?? false)
+                    {
+                        <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                        <form asp-action="Delete" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this room?');">
+                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>

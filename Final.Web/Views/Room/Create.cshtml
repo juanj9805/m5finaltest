@@ -1,0 +1,33 @@
+@model Room
+@{
+    ViewData["Title"] = "New room";
+    var hotels = ViewBag.Hotels as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
+}
+
+<h1 class="page-title mb-3"><i class="bi bi-door-open"></i> New room</h1>
+
+<div class="form-card">
+    <form asp-action="Create" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="mb-3">
+            <label asp-for="HotelId" class="form-label">Property</label>
+            <select asp-for="HotelId" asp-items="hotels" class="form-select"></select>
+        </div>
+        <div class="mb-3">
+            <label asp-for="Number" class="form-label"></label>
+            <input asp-for="Number" class="form-control" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="Capacity" class="form-label"></label>
+            <input asp-for="Capacity" class="form-control" type="number" />
+        </div>
+        <div class="mb-3">
+            <label asp-for="DayBasePrice" class="form-label">Price per night</label>
+            <input asp-for="DayBasePrice" class="form-control" type="number" step="0.01" />
+        </div>
+        <button type="submit" class="btn btn-success">Save</button>
+        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts { <partial name="_ValidationScriptsPartial" /> }

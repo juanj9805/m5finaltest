@@ -1,0 +1,44 @@
+@model Hotel
+@{
+    ViewData["Title"] = Model.Name;
+}
+
+<a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Back</a>
+
+<div class="card mb-4">
+    <div class="card-cover" style="height:180px;"><i class="bi bi-building"></i></div>
+    <div class="card-body">
+        <h1 class="page-title mb-1">@Model.Name</h1>
+        <p class="text-muted mb-3"><i class="bi bi-geo-alt"></i> @Model.Address, @Model.City</p>
+        <span class="badge-soft"><i class="bi bi-door-open"></i> @Model.TotalRooms rooms</span>
+    </div>
+</div>
+
+<h3 class="mb-3">Rooms</h3>
+@if (!Model.Rooms.Any())
+{
+    <div class="card p-4 text-center text-muted">No rooms published yet.</div>
+}
+else
+{
+    <div class="table-card">
+        <table class="table table-hover">
+            <thead>
+                <tr><th>Number</th><th>Capacity</th><th>Price / night</th><th class="text-end"></th></tr>
+            </thead>
+            <tbody>
+            @foreach (var r in Model.Rooms)
+            {
+                <tr>
+                    <td>Room @r.Number</td>
+                    <td><i class="bi bi-people"></i> @r.Capacity</td>
+                    <td class="price-tag">@r.DayBasePrice.ToString("C")</td>
+                    <td class="text-end">
+                        <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
+                    </td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    </div>
+}

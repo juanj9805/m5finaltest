@@ -1,0 +1,33 @@
+services:
+  db:
+    image: mysql:8.0
+    container_name: final_db
+    environment:
+      MYSQL_ROOT_PASSWORD: password
+      MYSQL_DATABASE: M5_Final
+    ports:
+      - "4306:3306"
+    volumes:
+      - db_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-ppassword"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: final_web
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__MySqlConnection: "Server=db;Port=3306;Database=M5_Final;User=root;Password=password"
+    ports:
+      - "8080:8080"
+
+volumes:
+  db_data:
