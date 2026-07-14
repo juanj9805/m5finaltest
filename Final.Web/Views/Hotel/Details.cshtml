@@ -3,42 +3,53 @@
     ViewData["Title"] = Model.Name;
 }
 
-<a asp-action="Index" class="btn btn-sm btn-outline-secondary mb-3"><i class="bi bi-arrow-left"></i> Back</a>
+<nav aria-label="breadcrumb" class="anim-in">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Properties</a></li>
+        <li class="breadcrumb-item active" aria-current="page">@Model.Name</li>
+    </ol>
+</nav>
 
-<div class="card mb-4">
-    <div class="card-cover" style="height:180px;"><i class="bi bi-building"></i></div>
-    <div class="card-body">
-        <h1 class="page-title mb-1">@Model.Name</h1>
-        <p class="text-muted mb-3"><i class="bi bi-geo-alt"></i> @Model.Address, @Model.City</p>
-        <span class="badge-soft"><i class="bi bi-door-open"></i> @Model.TotalRooms rooms</span>
+<div class="detail-hero cover-@(Model.Id % 6) anim-in">
+    <h1 class="display-5">@Model.Name</h1>
+    <p class="mb-0" style="opacity:.85;"><i class="bi bi-geo-alt-fill"></i> @Model.Address, @Model.City</p>
+    <div class="chips">
+        <span class="chip"><i class="bi bi-door-open"></i> @Model.TotalRooms rooms</span>
+        <span class="chip"><i class="bi bi-clock"></i> Check-in 14:00 · Check-out 12:00</span>
     </div>
 </div>
 
-<h3 class="mb-3">Rooms</h3>
+<h3 class="mb-3 anim-in d-1">Available rooms</h3>
 @if (!Model.Rooms.Any())
 {
-    <div class="card p-4 text-center text-muted">No rooms published yet.</div>
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-door-closed"></i></div>
+        <h3>No rooms published yet</h3>
+        <p>This property hasn't listed any rooms. Check back soon.</p>
+    </div>
 }
 else
 {
-    <div class="table-card">
-        <table class="table table-hover">
-            <thead>
-                <tr><th>Number</th><th>Capacity</th><th>Price / night</th><th class="text-end"></th></tr>
-            </thead>
-            <tbody>
-            @foreach (var r in Model.Rooms)
-            {
-                <tr>
-                    <td>Room @r.Number</td>
-                    <td><i class="bi bi-people"></i> @r.Capacity</td>
-                    <td class="price-tag">@r.DayBasePrice.ToString("C")</td>
-                    <td class="text-end">
-                        <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+    <div class="table-card anim-in d-1">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Number</th><th>Capacity</th><th class="text-end">Price / night</th><th class="text-end"></th></tr>
+                </thead>
+                <tbody>
+                @foreach (var r in Model.Rooms)
+                {
+                    <tr>
+                        <td class="fw-semibold">Room @r.Number</td>
+                        <td><span class="chip chip-neutral"><i class="bi bi-people"></i> @r.Capacity guests</span></td>
+                        <td class="text-end"><span class="price-tag">@r.DayBasePrice.ToString("C") <small>/ night</small></span></td>
+                        <td class="text-end">
+                            <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 }

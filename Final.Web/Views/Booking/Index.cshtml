@@ -1,47 +1,64 @@
 @model IEnumerable<Bookings>
 @{
     ViewData["Title"] = "Bookings";
+
+    string StatusChip(string? status) => status?.ToLowerInvariant() switch
+    {
+        var s when s is null => "chip-neutral",
+        var s when s.Contains("confirm") || s.Contains("paid") || s.Contains("active") => "chip-ok",
+        var s when s.Contains("cancel") || s.Contains("reject") => "chip-danger",
+        var s when s.Contains("pend") || s.Contains("hold") => "chip-warn",
+        _ => "chip-pine"
+    };
 }
 
-<div class="d-flex justify-content-between align-items-center mb-1">
-    <h1 class="page-title mb-0">Bookings</h1>
-    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New booking</a>
+<div class="page-head anim-in">
+    <div>
+        <h1 class="page-title">Bookings</h1>
+        <p class="page-subtitle"><i class="bi bi-clock"></i> Standard schedule: check-in 14:00 — check-out 12:00.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New booking</a>
 </div>
-<p class="page-subtitle"><i class="bi bi-clock"></i> Standard schedule: check-in 14:00 — check-out 12:00.</p>
 
 @if (!Model.Any())
 {
-    <div class="card p-5 text-center text-muted">
-        <div style="font-size:2.5rem;"><i class="bi bi-calendar-x"></i></div>
-        <p class="mb-0">No bookings yet.</p>
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
+        <h3>No bookings yet</h3>
+        <p>When you reserve a room, it will show up here with its payment and status.</p>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-calendar-plus"></i> Make a booking</a>
     </div>
 }
 else
 {
-    <div class="table-card">
-        <table class="table table-hover">
-            <thead>
-                <tr><th>Room</th><th>Client</th><th>Check-in</th><th>Check-out</th><th>Total</th><th>Status</th><th class="text-end"></th></tr>
-            </thead>
-            <tbody>
-            @foreach (var b in Model)
-            {
-                <tr>
-                    <td>Room @b.Room?.Number</td>
-                    <td>@b.Client?.Name</td>
-                    <td>@b.StartDate.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td>@b.EndDate.ToString("yyyy-MM-dd HH:mm")</td>
-                    <td class="price-tag">@(b.Payment?.Total.ToString("C") ?? "-")</td>
-                    <td><span class="badge-soft">@b.Status</span></td>
-                    <td class="text-end">
-                        <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-outline-primary">Details</a>
-                        <form asp-action="Delete" asp-route-id="@b.Id" method="post" class="d-inline" onsubmit="return confirm('Cancel this booking?');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Cancel</button>
-                        </form>
-                    </td>
-                </tr>
-            }
-            </tbody>
-        </table>
+    <div class="table-card anim-in d-1">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Room</th><th>Client</th><th>Check-in</th><th>Check-out</th><th class="text-end">Total</th><th>Status</th><th class="text-end">Actions</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var b in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">Room @b.Room?.Number</td>
+                        <td>@b.Client?.Name</td>
+                        <td>@b.StartDate.ToString("MMM d, yyyy · HH:mm")</td>
+                        <td>@b.EndDate.ToString("MMM d, yyyy · HH:mm")</td>
+                        <td class="text-end"><span class="price-tag">@(b.Payment?.Total.ToString("C") ?? "—")</span></td>
+                        <td><span class="chip @StatusChip(b.Status)">@b.Status</span></td>
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <a asp-action="Details" asp-route-id="@b.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                <form asp-action="Delete" asp-route-id="@b.Id" method="post" onsubmit="return confirm('Cancel this booking?');">
+                                    <button type="submit" class="btn-icon" title="Cancel booking" aria-label="Cancel booking @b.Id"><i class="bi bi-x-lg"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 }

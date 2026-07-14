@@ -3,35 +3,46 @@
     ViewData["Title"] = "Payments";
 }
 
-<h1 class="page-title mb-3">Payments</h1>
+<div class="page-head anim-in">
+    <div>
+        <h1 class="page-title">Payments</h1>
+        <p class="page-subtitle">Every processed payment, newest first.</p>
+    </div>
+</div>
 
 @if (!Model.Any())
 {
-    <div class="card p-5 text-center text-muted">
-        <div style="font-size:2.5rem;"><i class="bi bi-receipt"></i></div>
-        <p class="mb-0">No payments recorded yet.</p>
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-receipt"></i></div>
+        <h3>No payments recorded yet</h3>
+        <p>Payments are created automatically when a booking is confirmed.</p>
     </div>
 }
 else
 {
-    <div class="table-card">
-        <table class="table table-hover">
-            <thead>
-                <tr><th>#</th><th>Booking</th><th>Subtotal</th><th>Tax</th><th>Total</th><th>Date</th></tr>
-            </thead>
-            <tbody>
-            @foreach (var p in Model)
-            {
-                <tr>
-                    <td>@p.Id</td>
-                    <td>#@p.BookingId</td>
-                    <td>@p.SubTotal.ToString("C")</td>
-                    <td>@p.Tax.ToString("C")</td>
-                    <td class="price-tag">@p.Total.ToString("C")</td>
-                    <td class="text-muted">@p.CreatedAt.ToString("yyyy-MM-dd")</td>
-                </tr>
-            }
-            </tbody>
-        </table>
+    <div class="table-card anim-in d-1">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>#</th><th>Booking</th><th class="text-end">Subtotal</th><th class="text-end">Tax</th><th class="text-end">Total</th><th>Date</th><th class="text-end">Actions</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var p in Model)
+                {
+                    <tr>
+                        <td class="text-muted">@p.Id</td>
+                        <td class="fw-semibold">#@p.BookingId</td>
+                        <td class="text-end">@p.SubTotal.ToString("C")</td>
+                        <td class="text-end text-muted">@p.Tax.ToString("C")</td>
+                        <td class="text-end"><span class="price-tag">@p.Total.ToString("C")</span></td>
+                        <td class="text-muted">@p.CreatedAt.ToString("MMM d, yyyy")</td>
+                        <td class="text-end">
+                            <a asp-action="Details" asp-route-id="@p.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
     </div>
 }

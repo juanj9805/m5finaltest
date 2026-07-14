@@ -3,31 +3,51 @@
     ViewData["Title"] = "Clients";
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="page-title mb-0">Clients</h1>
-    <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New client</a>
+<div class="page-head anim-in">
+    <div>
+        <h1 class="page-title">Clients</h1>
+        <p class="page-subtitle">People who book through StayFinder.</p>
+    </div>
+    <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New client</a>
 </div>
 
-<div class="table-card">
-    <table class="table table-hover">
-        <thead>
-            <tr><th>Name</th><th>Email</th><th>Bookings</th><th class="text-end"></th></tr>
-        </thead>
-        <tbody>
-        @foreach (var c in Model)
-        {
-            <tr>
-                <td><i class="bi bi-person-circle text-muted"></i> @c.Name</td>
-                <td>@c.Email</td>
-                <td><span class="badge-soft">@c.Bookings.Count</span></td>
-                <td class="text-end">
-                    <a asp-action="Edit" asp-route-id="@c.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                    <form asp-action="Delete" asp-route-id="@c.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this client?');">
-                        <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                    </form>
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
+@if (!Model.Any())
+{
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-people"></i></div>
+        <h3>No clients yet</h3>
+        <p>Add your first client to start creating bookings for them.</p>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-person-plus"></i> Add a client</a>
+    </div>
+}
+else
+{
+    <div class="table-card anim-in d-1">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Name</th><th>Email</th><th>Bookings</th><th class="text-end">Actions</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var c in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold"><i class="bi bi-person-circle text-muted me-1"></i> @c.Name</td>
+                        <td class="text-muted">@c.Email</td>
+                        <td><span class="chip chip-neutral"><i class="bi bi-calendar-check"></i> @c.Bookings.Count</span></td>
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <a asp-action="Details" asp-route-id="@c.Id" class="btn btn-sm btn-outline-primary">Details</a>
+                                <a asp-action="Edit" asp-route-id="@c.Id" class="btn-icon" title="Edit client" aria-label="Edit @c.Name"><i class="bi bi-pencil"></i></a>
+                                <form asp-action="Delete" asp-route-id="@c.Id" method="post" onsubmit="return confirm('Delete this client?');">
+                                    <button type="submit" class="btn-icon" title="Delete client" aria-label="Delete @c.Name"><i class="bi bi-trash"></i></button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}

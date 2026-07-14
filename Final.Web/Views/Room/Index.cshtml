@@ -1,41 +1,60 @@
 @model IEnumerable<Room>
 @{
     ViewData["Title"] = "Rooms";
+    var isAuth = User.Identity?.IsAuthenticated ?? false;
 }
 
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1 class="page-title mb-0">Rooms</h1>
-    @if (User.Identity?.IsAuthenticated ?? false)
+<div class="page-head anim-in">
+    <div>
+        <h1 class="page-title">Rooms</h1>
+        <p class="page-subtitle">Every bookable room across all properties.</p>
+    </div>
+    @if (isAuth)
     {
-        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New room</a>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New room</a>
     }
 </div>
 
-<div class="table-card">
-    <table class="table table-hover">
-        <thead>
-            <tr><th>Property</th><th>Number</th><th>Capacity</th><th>Price / night</th><th class="text-end"></th></tr>
-        </thead>
-        <tbody>
-        @foreach (var r in Model)
-        {
-            <tr>
-                <td>@r.Hotel?.Name</td>
-                <td>Room @r.Number</td>
-                <td><i class="bi bi-people"></i> @r.Capacity</td>
-                <td class="price-tag">@r.DayBasePrice.ToString("C")</td>
-                <td class="text-end">
-                    <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
-                    @if (User.Identity?.IsAuthenticated ?? false)
-                    {
-                        <a asp-action="Edit" asp-route-id="@r.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
-                        <form asp-action="Delete" asp-route-id="@r.Id" method="post" class="d-inline" onsubmit="return confirm('Delete this room?');">
-                            <button type="submit" class="btn btn-sm btn-outline-danger">Delete</button>
-                        </form>
-                    }
-                </td>
-            </tr>
-        }
-        </tbody>
-    </table>
-</div>
+@if (!Model.Any())
+{
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-door-open"></i></div>
+        <h3>No rooms yet</h3>
+        <p>Rooms will appear here once properties publish them.</p>
+    </div>
+}
+else
+{
+    <div class="table-card anim-in d-1">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr><th>Property</th><th>Number</th><th>Capacity</th><th class="text-end">Price / night</th><th class="text-end">Actions</th></tr>
+                </thead>
+                <tbody>
+                @foreach (var r in Model)
+                {
+                    <tr>
+                        <td class="fw-semibold">@r.Hotel?.Name</td>
+                        <td>Room @r.Number</td>
+                        <td><span class="chip chip-neutral"><i class="bi bi-people"></i> @r.Capacity</span></td>
+                        <td class="text-end"><span class="price-tag">@r.DayBasePrice.ToString("C")</span></td>
+                        <td class="text-end">
+                            <div class="d-inline-flex align-items-center gap-2">
+                                <a asp-controller="Booking" asp-action="Create" asp-route-roomId="@r.Id" class="btn btn-sm btn-primary"><i class="bi bi-calendar-plus"></i> Book</a>
+                                @if (isAuth)
+                                {
+                                    <a asp-action="Edit" asp-route-id="@r.Id" class="btn-icon" title="Edit room" aria-label="Edit room @r.Number"><i class="bi bi-pencil"></i></a>
+                                    <form asp-action="Delete" asp-route-id="@r.Id" method="post" onsubmit="return confirm('Delete this room?');">
+                                        <button type="submit" class="btn-icon" title="Delete room" aria-label="Delete room @r.Number"><i class="bi bi-trash"></i></button>
+                                    </form>
+                                }
+                            </div>
+                        </td>
+                    </tr>
+                }
+                </tbody>
+            </table>
+        </div>
+    </div>
+}
