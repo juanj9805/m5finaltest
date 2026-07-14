@@ -3,13 +3,20 @@
     ViewData["Title"] = "My wishlist";
 }
 
-<h1 class="page-title mb-3"><i class="bi bi-heart-fill text-danger"></i> My wishlist</h1>
+<div class="page-head anim-in">
+    <div>
+        <h1 class="page-title"><i class="bi bi-heart-fill" style="color: #d33a3a;"></i> My wishlist</h1>
+        <p class="page-subtitle">Properties you've saved for later.</p>
+    </div>
+</div>
 
 @if (!Model.Any())
 {
-    <div class="card p-5 text-center text-muted">
-        <div style="font-size:2.5rem;"><i class="bi bi-heart"></i></div>
-        <p class="mb-0">You haven't saved any properties yet. Browse the <a asp-controller="Hotel" asp-action="Index">catalog</a> and tap <i class="bi bi-heart"></i> Save.</p>
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-heart"></i></div>
+        <h3>Nothing saved yet</h3>
+        <p>Browse the catalog and tap the heart on any property to keep it here.</p>
+        <a asp-controller="Hotel" asp-action="Index" class="btn btn-primary"><i class="bi bi-search"></i> Browse properties</a>
     </div>
 }
 else
@@ -18,19 +25,25 @@ else
         @foreach (var h in Model)
         {
             <div class="col-sm-6 col-lg-4">
-                <div class="card property-card h-100">
-                    <div class="card-cover"><i class="bi bi-building"></i></div>
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">@h.Name</h5>
-                        <p class="text-muted mb-2"><i class="bi bi-geo-alt"></i> @h.City</p>
-                        <p class="small text-muted mb-0">@h.Address</p>
+                <div class="card property-card h-100 reveal">
+                    <div class="card-cover cover-@(h.Id % 6)">
+                        <i class="bi bi-building"></i>
+                        <span class="cover-city"><i class="bi bi-geo-alt-fill"></i> @h.City</span>
+                        <div class="cover-fav">
+                            <form asp-action="Remove" method="post">
+                                <input type="hidden" name="hotelId" value="@h.Id" />
+                                <button type="submit" class="btn-fav" title="Remove from wishlist" aria-label="Remove @h.Name from wishlist">
+                                    <i class="bi bi-heart-fill" style="color: #d33a3a;"></i>
+                                </button>
+                            </form>
+                        </div>
                     </div>
-                    <div class="card-footer bg-white border-0 d-flex gap-2 pb-3">
-                        <a asp-controller="Hotel" asp-action="Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary">View</a>
-                        <form asp-action="Remove" method="post" class="d-inline">
-                            <input type="hidden" name="hotelId" value="@h.Id" />
-                            <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-heart-fill"></i> Remove</button>
-                        </form>
+                    <div class="card-body">
+                        <h5 class="card-title">@h.Name</h5>
+                        <p class="card-meta mb-2 text-truncate">@h.Address</p>
+                        <div class="card-actions">
+                            <a asp-controller="Hotel" asp-action="Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary stretched-link">View rooms</a>
+                        </div>
                     </div>
                 </div>
             </div>

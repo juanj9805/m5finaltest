@@ -540,9 +540,12 @@ h1, h2, h3, h4, h5, h6 {
   align-items: center;
   gap: .5rem;
   margin-top: .9rem;
-  position: relative;
-  z-index: 2; /* above stretched-link */
 }
+
+/* keep secondary actions clickable above the stretched-link overlay
+   (the row itself must stay unpositioned so the link spans the card) */
+.card-actions .btn-icon,
+.card-actions form { position: relative; z-index: 2; }
 
 /* ---------- Chips & badges ---------- */
 .badge-soft {

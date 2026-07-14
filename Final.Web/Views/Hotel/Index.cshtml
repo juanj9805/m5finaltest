@@ -2,37 +2,46 @@
 @{
     ViewData["Title"] = "Properties";
     var city = ViewBag.City as string;
+    var isAuth = User.Identity?.IsAuthenticated ?? false;
 }
 
-<div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+<div class="page-head anim-in">
     <div>
         <h1 class="page-title">Properties</h1>
-        <p class="page-subtitle mb-0">Browse available properties. No account needed to look around.</p>
+        <p class="page-subtitle">Browse available properties. No account needed to look around.</p>
     </div>
-    @if (User.Identity?.IsAuthenticated ?? false)
+    @if (isAuth)
     {
-        <a asp-action="Create" class="btn btn-success"><i class="bi bi-plus-lg"></i> New property</a>
+        <a asp-action="Create" class="btn btn-primary"><i class="bi bi-plus-lg"></i> New property</a>
     }
 </div>
 
-<form method="get" class="row g-2 my-3">
-    <div class="col-sm-5 col-md-4">
-        <div class="input-group">
-            <span class="input-group-text bg-white"><i class="bi bi-geo-alt"></i></span>
-            <input type="text" name="city" value="@city" class="form-control" placeholder="Filter by city" />
-        </div>
+<form method="get" class="d-flex align-items-center gap-2 flex-wrap mb-4 anim-in d-1">
+    <div class="filter-bar">
+        <i class="bi bi-geo-alt"></i>
+        <input type="text" name="city" value="@city" placeholder="Filter by city" aria-label="Filter by city" />
+        <button type="submit" class="btn btn-sm btn-primary">Search</button>
     </div>
-    <div class="col-auto">
-        <button type="submit" class="btn btn-primary">Search</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Clear</a>
-    </div>
+    @if (!string.IsNullOrWhiteSpace(city))
+    {
+        <a asp-action="Index" class="btn btn-sm btn-outline-secondary"><i class="bi bi-x-lg"></i> Clear</a>
+    }
 </form>
 
 @if (!Model.Any())
 {
-    <div class="card p-5 text-center text-muted">
-        <div style="font-size:2.5rem;"><i class="bi bi-search"></i></div>
-        <p class="mb-0">No properties found@(string.IsNullOrWhiteSpace(city) ? "" : $" in \"{city}\"").</p>
+    <div class="empty-state anim-in d-1">
+        <div class="empty-icon"><i class="bi bi-search"></i></div>
+        <h3>No properties found</h3>
+        <p>
+            @(string.IsNullOrWhiteSpace(city)
+                ? "There's nothing listed yet — check back soon."
+                : $"Nothing matches \"{city}\". Try another city or clear the filter.")
+        </p>
+        @if (!string.IsNullOrWhiteSpace(city))
+        {
+            <a asp-action="Index" class="btn btn-outline-primary">Show all properties</a>
+        }
     </div>
 }
 else
@@ -41,24 +50,35 @@ else
         @foreach (var h in Model)
         {
             <div class="col-sm-6 col-lg-4">
-                <div class="card property-card h-100">
-                    <div class="card-cover"><i class="bi bi-building"></i></div>
-                    <div class="card-body">
-                        <h5 class="card-title mb-1">@h.Name</h5>
-                        <p class="text-muted mb-2"><i class="bi bi-geo-alt"></i> @h.City</p>
-                        <p class="small text-muted mb-3">@h.Address</p>
-                        <span class="badge-soft"><i class="bi bi-door-open"></i> @h.Rooms.Count rooms</span>
-                    </div>
-                    <div class="card-footer bg-white border-0 d-flex gap-2 flex-wrap pb-3">
-                        <a asp-action="Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary">View</a>
-                        @if (User.Identity?.IsAuthenticated ?? false)
+                <div class="card property-card h-100 reveal">
+                    <div class="card-cover cover-@(h.Id % 6)">
+                        <i class="bi bi-building"></i>
+                        <span class="cover-city"><i class="bi bi-geo-alt-fill"></i> @h.City</span>
+                        @if (isAuth)
                         {
-                            <form asp-controller="Wishlist" asp-action="Add" method="post" class="d-inline">
-                                <input type="hidden" name="hotelId" value="@h.Id" />
-                                <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-heart"></i> Save</button>
-                            </form>
-                            <a asp-action="Edit" asp-route-id="@h.Id" class="btn btn-sm btn-outline-secondary">Edit</a>
+                            <div class="cover-fav">
+                                <form asp-controller="Wishlist" asp-action="Add" method="post">
+                                    <input type="hidden" name="hotelId" value="@h.Id" />
+                                    <button type="submit" class="btn-fav" title="Save to wishlist" aria-label="Save @h.Name to wishlist">
+                                        <i class="bi bi-heart"></i>
+                                    </button>
+                                </form>
+                            </div>
                         }
+                    </div>
+                    <div class="card-body">
+                        <h5 class="card-title">@h.Name</h5>
+                        <p class="card-meta mb-2 text-truncate">@h.Address</p>
+                        <span class="badge-soft"><i class="bi bi-door-open"></i> @h.Rooms.Count rooms</span>
+                        <div class="card-actions">
+                            <a asp-action="Details" asp-route-id="@h.Id" class="btn btn-sm btn-primary stretched-link">View rooms</a>
+                            @if (isAuth)
+                            {
+                                <a asp-action="Edit" asp-route-id="@h.Id" class="btn-icon" title="Edit property" aria-label="Edit @h.Name">
+                                    <i class="bi bi-pencil"></i>
+                                </a>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>

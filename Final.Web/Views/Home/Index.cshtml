@@ -2,34 +2,44 @@
     ViewData["Title"] = "Home";
 }
 
-<section class="hero text-center">
+<section class="hero text-center anim-in">
+    <span class="hero-eyebrow"><i class="bi bi-stars"></i> Stays worth remembering</span>
     <h1 class="display-4">Find your next stay</h1>
-    <p class="lead mt-3 mb-4">Browse properties freely — sign in only when you want to book or save a favourite.</p>
-    <a asp-controller="Hotel" asp-action="Index" class="btn btn-light btn-lg px-4">
-        <i class="bi bi-search"></i> Browse properties
-    </a>
+    <p class="lead mt-3 mb-0">Browse properties freely — sign in only when you want to book or save a favourite.</p>
+
+    <form asp-controller="Hotel" asp-action="Index" method="get" class="hero-search" role="search">
+        <i class="bi bi-geo-alt"></i>
+        <input type="text" name="city" placeholder="Where are you going?" aria-label="Search by city" />
+        <button type="submit" class="btn btn-primary"><i class="bi bi-search"></i> Search</button>
+    </form>
+
+    <div class="hero-chips">
+        <span><i class="bi bi-shield-check"></i> No double-booking</span>
+        <span><i class="bi bi-lightning-charge"></i> Instant confirmation</span>
+        <span><i class="bi bi-heart"></i> Save favourites</span>
+    </div>
 </section>
 
 <div class="row g-4">
     <div class="col-md-4">
-        <div class="card h-100 p-4 text-center">
-            <div class="mb-2" style="font-size:2rem;color:var(--brand);"><i class="bi bi-shield-check"></i></div>
+        <div class="card feature-card text-center anim-in d-1">
+            <div class="icon-tile mx-auto"><i class="bi bi-shield-check"></i></div>
             <h5>Strict availability</h5>
-            <p class="text-muted mb-0">No double-booking: a room can't be reserved for overlapping dates.</p>
+            <p>No double-booking: a room can't be reserved for overlapping dates.</p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card h-100 p-4 text-center">
-            <div class="mb-2" style="font-size:2rem;color:var(--brand);"><i class="bi bi-clock-history"></i></div>
+        <div class="card feature-card text-center anim-in d-2">
+            <div class="icon-tile mx-auto"><i class="bi bi-clock-history"></i></div>
             <h5>Standard schedule</h5>
-            <p class="text-muted mb-0">Every confirmed booking is check-in 14:00, check-out 12:00.</p>
+            <p>Every confirmed booking is check-in 14:00, check-out 12:00.</p>
         </div>
     </div>
     <div class="col-md-4">
-        <div class="card h-100 p-4 text-center">
-            <div class="mb-2" style="font-size:2rem;color:var(--brand);"><i class="bi bi-heart-fill"></i></div>
+        <div class="card feature-card text-center anim-in d-3">
+            <div class="icon-tile mx-auto"><i class="bi bi-heart-fill"></i></div>
             <h5>Save favourites</h5>
-            <p class="text-muted mb-0">Build a wishlist and pick up where you left off next time.</p>
+            <p>Build a wishlist and pick up where you left off next time.</p>
         </div>
     </div>
 </div>
