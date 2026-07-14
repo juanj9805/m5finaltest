@@ -13,3 +13,8 @@ out/
 ## OS
 .DS_Store
 Thumbs.db
+
+## Client-side libraries must ship with the app
+## (overrides a global gitignore rule that excludes dist/)
+!Final.Web/wwwroot/lib/
+!Final.Web/wwwroot/lib/**
