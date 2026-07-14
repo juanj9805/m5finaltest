@@ -3,30 +3,46 @@
     ViewData["Title"] = "New property";
 }
 
-<h1 class="page-title mb-3"><i class="bi bi-building-add"></i> New property</h1>
+<nav aria-label="breadcrumb" class="anim-in">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Properties</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New property</li>
+    </ol>
+</nav>
 
-<div class="form-card">
+<div class="form-card anim-in">
+    <div class="form-card-head">
+        <h1><i class="bi bi-building-add"></i> New property</h1>
+        <p>List a property so guests can find and book its rooms.</p>
+    </div>
     <form asp-action="Create" method="post">
-        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div asp-validation-summary="ModelOnly"></div>
         <div class="mb-3">
             <label asp-for="Name" class="form-label"></label>
-            <input asp-for="Name" class="form-control" />
-            <span asp-validation-for="Name" class="text-danger"></span>
+            <input asp-for="Name" class="form-control" placeholder="e.g. Casa del Río" />
+            <span asp-validation-for="Name"></span>
         </div>
-        <div class="mb-3">
-            <label asp-for="City" class="form-label"></label>
-            <input asp-for="City" class="form-control" />
+        <div class="row">
+            <div class="col-md-6 mb-3">
+                <label asp-for="City" class="form-label"></label>
+                <input asp-for="City" class="form-control" placeholder="e.g. Cartagena" />
+                <span asp-validation-for="City"></span>
+            </div>
+            <div class="col-md-6 mb-3">
+                <label asp-for="TotalRooms" class="form-label"></label>
+                <input asp-for="TotalRooms" class="form-control" type="number" min="0" />
+                <span asp-validation-for="TotalRooms"></span>
+            </div>
         </div>
         <div class="mb-3">
             <label asp-for="Address" class="form-label"></label>
-            <input asp-for="Address" class="form-control" />
+            <input asp-for="Address" class="form-control" placeholder="Street and number" />
+            <span asp-validation-for="Address"></span>
         </div>
-        <div class="mb-3">
-            <label asp-for="TotalRooms" class="form-label"></label>
-            <input asp-for="TotalRooms" class="form-control" type="number" />
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Save property</button>
         </div>
-        <button type="submit" class="btn btn-success">Save</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
     </form>
 </div>
 

@@ -5,32 +5,46 @@
     var clients = ViewBag.Clients as Microsoft.AspNetCore.Mvc.Rendering.SelectList;
 }
 
-<h1 class="page-title mb-1"><i class="bi bi-calendar-plus"></i> New booking</h1>
-<p class="page-subtitle"><i class="bi bi-clock"></i> Check-in is fixed at 14:00 and check-out at 12:00.</p>
+<nav aria-label="breadcrumb" class="anim-in">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a asp-action="Index">Bookings</a></li>
+        <li class="breadcrumb-item active" aria-current="page">New booking</li>
+    </ol>
+</nav>
 
-<div class="form-card">
+<div class="form-card anim-in">
+    <div class="form-card-head">
+        <h1><i class="bi bi-calendar-plus"></i> New booking</h1>
+        <p><i class="bi bi-clock"></i> Check-in is fixed at 14:00 and check-out at 12:00. Rooms can't be double-booked.</p>
+    </div>
     <form asp-action="Create" method="post">
-        <div asp-validation-summary="All" class="text-danger"></div>
+        <div asp-validation-summary="All"></div>
         <div class="mb-3">
             <label asp-for="RoomId" class="form-label">Room</label>
             <select asp-for="RoomId" asp-items="rooms" class="form-select"></select>
+            <span asp-validation-for="RoomId"></span>
         </div>
         <div class="mb-3">
             <label asp-for="ClientId" class="form-label">Client</label>
             <select asp-for="ClientId" asp-items="clients" class="form-select"></select>
+            <span asp-validation-for="ClientId"></span>
         </div>
         <div class="row">
             <div class="col-md-6 mb-3">
                 <label asp-for="StartDate" class="form-label">Check-in date</label>
                 <input asp-for="StartDate" class="form-control" type="date" />
+                <span asp-validation-for="StartDate"></span>
             </div>
             <div class="col-md-6 mb-3">
                 <label asp-for="EndDate" class="form-label">Check-out date</label>
                 <input asp-for="EndDate" class="form-control" type="date" />
+                <span asp-validation-for="EndDate"></span>
             </div>
         </div>
-        <button type="submit" class="btn btn-success">Confirm booking</button>
-        <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+        <div class="form-actions">
+            <a asp-action="Index" class="btn btn-outline-secondary">Cancel</a>
+            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg"></i> Confirm booking</button>
+        </div>
     </form>
 </div>
 

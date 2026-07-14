@@ -2,9 +2,9 @@
 @{
     ViewData["Title"] = "Bookings";
 
-    string StatusChip(string? status) => status?.ToLowerInvariant() switch
+    string StatusChip(string? status) => (status ?? "").ToLowerInvariant() switch
     {
-        var s when s is null => "chip-neutral",
+        "" => "chip-neutral",
         var s when s.Contains("confirm") || s.Contains("paid") || s.Contains("active") => "chip-ok",
         var s when s.Contains("cancel") || s.Contains("reject") => "chip-danger",
         var s when s.Contains("pend") || s.Contains("hold") => "chip-warn",
